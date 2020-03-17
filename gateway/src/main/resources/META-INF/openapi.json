@@ -1,0 +1,532 @@
+{
+    "openapi": "3.0.2",
+    "info": {
+        "title": "Gramola API",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/events/{country}/{city}": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Event"
+                                    }
+                                },
+                                "examples": {
+                                    "eventsMatchingCriteria": {
+                                        "value": [
+                                            {
+                                                "id": 1,
+                                                "name": "Not in the Lifetime Tour",
+                                                "address": "Cmo. de Perales, 23, 28041",
+                                                "city": "MADRID",
+                                                "province": "MADRID",
+                                                "country": "SPAIN",
+                                                "date": "2018-08-05",
+                                                "startTime": "18:00",
+                                                "endTime": "23:00",
+                                                "location": "Caja Magica",
+                                                "artist": "Guns n Roses",
+                                                "description": "The revived Guns N’ Roses and ...",
+                                                "image": "guns-P1080795.jpg"
+                                            },
+                                            {
+                                                "id": 2,
+                                                "name": "CONCRETE AND GOLD TOUR 2018",
+                                                "address": "8 Boulevard de Bercy, Paris",
+                                                "city": "PARIS",
+                                                "province": "PARIS",
+                                                "country": "FRANCE",
+                                                "date": "2018-09-15",
+                                                "startTime": "18:00",
+                                                "endTime": "23:00",
+                                                "location": "AccorHotels Arena",
+                                                "artist": "Foo Fighters",
+                                                "description": "Concrete and Gold Tour is...",
+                                                "image": "foo-P1000628.jpg"
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Succesful response, list of events"
+                    }
+                },
+                "operationId": "eventsGetByCountryAndCity",
+                "summary": "Get events by country and city"
+            },
+            "parameters": [
+                {
+                    "name": "country",
+                    "description": "Country where the event is to happen (or happened)",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "in": "path",
+                    "required": true
+                },
+                {
+                    "name": "city",
+                    "description": "City where the event is to happen (or happened)",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "in": "path",
+                    "required": true
+                }
+            ]
+        },
+        "/api/files/{fileId}": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "content": {
+                            "image/jpeg": {
+                                "schema": {
+                                    "format": "binary",
+                                    "type": "string"
+                                }
+                            },
+                            "image/png": {
+                                "schema": {
+                                    "format": "binary",
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "description": "Returns a file"
+                    }
+                },
+                "operationId": "filesGet",
+                "summary": "Get file by ID"
+            },
+            "parameters": [
+                {
+                    "name": "fileId",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "in": "path",
+                    "required": true
+                }
+            ]
+        },
+        "/api/files/upload": {
+            "post": {
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/FileUpload",
+                                "properties": {
+                                    "naming_strategy": {
+                                        "type": "string"
+                                    },
+                                    "file": {
+                                        "format": "binary",
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            "encoding": {
+                                "file": {
+                                    "contentType": "image/png, image/jpeg"
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/FileResponse"
+                                }
+                            }
+                        },
+                        "description": "Successful upload"
+                    }
+                },
+                "operationId": "filesPost",
+                "summary": "Receives metada and a file as form-data"
+            }
+        },
+        "/api/timeline": {
+            "summary": "Timeline",
+            "post": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TimelineEntry"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TimelineEntry"
+                                }
+                            }
+                        },
+                        "description": "Timeline entry successfully created"
+                    }
+                },
+                "operationId": "timelinePost",
+                "summary": "Create new timeline entry"
+            }
+        },
+        "/api/timeline/{eventId}/{userId}": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/TimelineEntry"
+                                    }
+                                },
+                                "examples": {
+                                    "timelineByEventId": {
+                                        "value": [
+                                            {
+                                                "_id": "5b8e4542545687035ce10b84",
+                                                "id": "1",
+                                                "eventId": "1",
+                                                "userId": "trever",
+                                                "title": "Waiting at the entrance!",
+                                                "date": "2018-04-27",
+                                                "time": "18:00",
+                                                "body": "Lorem ipsum...",
+                                                "image": "images/guns-P1080795.png",
+                                                "__v": 0
+                                            },
+                                            {
+                                                "_id": "5b8e4542545687035ce10b85",
+                                                "id": "2",
+                                                "eventId": "1",
+                                                "userId": "trever",
+                                                "title": "Checking in!",
+                                                "date": "2018-04-27",
+                                                "time": "18:32",
+                                                "body": "Lorem ipsum...",
+                                                "image": "images/guns-P1080795.png",
+                                                "__v": 0
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Successful response"
+                    }
+                },
+                "operationId": "timelineGetByEventIdAndUserId",
+                "summary": "Get timeline entry by Event ID and User ID"
+            },
+            "parameters": [
+                {
+                    "name": "eventId",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "in": "path",
+                    "required": true
+                },
+                {
+                    "name": "userId",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "in": "path",
+                    "required": true
+                }
+            ]
+        },
+        "/api/events": {
+            "summary": "Events",
+            "get": {
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Event"
+                                    }
+                                },
+                                "examples": {
+                                    "allEvents": {
+                                        "value": [
+                                            {
+                                                "id": 1,
+                                                "name": "Not in the Lifetime Tour",
+                                                "address": "Cmo. de Perales, 23, 28041",
+                                                "city": "MADRID",
+                                                "province": "MADRID",
+                                                "country": "SPAIN",
+                                                "date": "2018-08-05",
+                                                "startTime": "18:00",
+                                                "endTime": "23:00",
+                                                "location": "Caja Magica",
+                                                "artist": "Guns n Roses",
+                                                "description": "The revived Guns N’ Roses and ...",
+                                                "image": "guns-P1080795.jpg"
+                                            },
+                                            {
+                                                "id": 2,
+                                                "name": "CONCRETE AND GOLD TOUR 2018",
+                                                "address": "8 Boulevard de Bercy, Paris",
+                                                "city": "PARIS",
+                                                "province": "PARIS",
+                                                "country": "FRANCE",
+                                                "date": "2018-09-15",
+                                                "startTime": "18:00",
+                                                "endTime": "23:00",
+                                                "location": "AccorHotels Arena",
+                                                "artist": "Foo Fighters",
+                                                "description": "Concrete and Gold Tour is...",
+                                                "image": "foo-P1000628.jpg"
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Succesful response, list of events"
+                    }
+                },
+                "operationId": "eventsGetAll",
+                "summary": "Get all events",
+                "description": "Get all events"
+            },
+            "post": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Event"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "headers": {
+                            "location": {
+
+                            }
+                        },
+                        "content": {
+                            "application/octet-stream": {
+                                "examples": {
+                                    "eventCreated": {
+                                        "value": " content-length: 0 \n content-type: application/octet-stream \n location: http://localhost:8081/api/4 "
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Successfully created object"
+                    }
+                },
+                "operationId": "eventsPost",
+                "summary": "Create new event",
+                "description": "Create new event"
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "FileResponse": {
+                "title": "Root Type for FileResponse",
+                "description": "The root of the FileResponse type's schema.",
+                "type": "object",
+                "properties": {
+                    "result": {
+                        "type": "string"
+                    },
+                    "filename": {
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "result": "success",
+                    "filename": "foo-P1000628.jpg"
+                }
+            },
+            "Error": {
+                "title": "Root Type for Error",
+                "description": "The root of the Error type's schema.",
+                "required": [
+                    "code",
+                    "message"
+                ],
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string"
+                    },
+                    "code": {
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "message": "File size error",
+                    "code": "FILE_SIZE_ERROR"
+                }
+            },
+            "Event": {
+                "title": "Root Type for Event",
+                "description": "The root of the Event type's schema.",
+                "required": [
+                    "id",
+                    "name",
+                    "location",
+                    "address",
+                    "city",
+                    "country",
+                    "province",
+                    "startTime"
+                ],
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "format": "int32",
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "address": {
+                        "type": "string"
+                    },
+                    "city": {
+                        "type": "string"
+                    },
+                    "province": {
+                        "type": "string"
+                    },
+                    "country": {
+                        "type": "string"
+                    },
+                    "date": {
+                        "format": "date",
+                        "type": "string"
+                    },
+                    "startTime": {
+                        "type": "string"
+                    },
+                    "endTime": {
+                        "type": "string"
+                    },
+                    "location": {
+                        "type": "string"
+                    },
+                    "artist": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "image": {
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "id": 1,
+                    "name": "Not in the Lifetime Tour",
+                    "address": "Cmo. de Perales, 23, 28041",
+                    "city": "MADRID",
+                    "province": "MADRID",
+                    "country": "SPAIN",
+                    "date": "2018-08-05",
+                    "startTime": "18:00",
+                    "endTime": "23:00",
+                    "location": "Caja Magica",
+                    "artist": "Guns n Roses",
+                    "description": "The revived Guns N’ Roses and ...",
+                    "image": "guns-P1080795.jpg"
+                }
+            },
+            "TimelineEntry": {
+                "title": "Root Type for TimelineEntry",
+                "description": "The root of the TimelineEntry type's schema.",
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "format": "int32",
+                        "type": "integer"
+                    },
+                    "eventId": {
+                        "format": "int32",
+                        "type": "integer"
+                    },
+                    "userId": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "date": {
+                        "format": "date",
+                        "type": "string"
+                    },
+                    "time": {
+                        "type": "string"
+                    },
+                    "body": {
+                        "type": "string"
+                    },
+                    "image": {
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "id": 1,
+                    "eventId": 1,
+                    "userId": "trever",
+                    "title": "Waiting at the entrance!",
+                    "date": "2018-04-27",
+                    "time": "18:00",
+                    "body": "Lorem ipsum...",
+                    "image": "images/guns-P1080795.png"
+                }
+            },
+            "FileUpload": {
+                "description": "",
+                "required": [
+                    "naming_strategy",
+                    "file"
+                ],
+                "type": "object",
+                "properties": {
+                    "naming_strategy": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "file": {
+                        "format": "binary",
+                        "description": "",
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    }
+}
