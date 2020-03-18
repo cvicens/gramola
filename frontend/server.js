@@ -1,11 +1,14 @@
 const express = require('express');
 const corser = require("corser");
+const cors = require("cors");
 
 const keycloakConfig = require('./config/keycloak.config');
 const serverConfig = require('./config/server.config');
 
 const app = express();
-app.use(corser.create());
+
+//app.use(corser.create());
+app.use(cors());
 
 app.use(express.static(__dirname + '/dist/frontend'));
 
