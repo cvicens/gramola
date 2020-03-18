@@ -1,0 +1,21 @@
+<mat-toolbar color="secundary">
+  <mat-toolbar-row>
+    <span>Events</span>
+    <span class="example-spacer"></span>
+    <button mat-icon-button color="primary">
+        <mat-icon aria-hidden="false" aria-label="add icon">add</mat-icon>
+    </button>
+  </mat-toolbar-row>
+</mat-toolbar>
+
+<mat-grid-list cols="2" rowHeight="2:1">
+    <mat-card class="card-item" *ngFor="let event of events">
+      <mat-card-header>
+        <mat-card-title>{{event.name}}</mat-card-title>
+        <mat-card-subtitle>{{event.artist}} @ {{event.location}}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        
+      </mat-card-content>
+    </mat-card>
+</mat-grid-list>
