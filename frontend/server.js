@@ -1,5 +1,4 @@
 const express = require('express');
-const corser = require("corser");
 const cors = require("cors");
 
 const keycloakConfig = require('./config/keycloak.config');
@@ -11,12 +10,6 @@ const app = express();
 app.use(cors());
 
 app.use(express.static(__dirname + '/dist/frontend'));
-
-app.options("*", function (req, res) {
-  // CORS
-  res.writeHead(204);
-  res.end();
-});
 
 // Used for App health checking
 app.use('/api/health', (request, response) => {

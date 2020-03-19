@@ -23,11 +23,13 @@ export FRONTEND_CONTEXT_DIR="frontend"
 export FRONTEND_SERVICE_NAME="frontend"
 export FRONTEND_IMAGE=${FRONTEND_SERVICE_NAME}:${FRONTEND_VERSION}
 
-#export QUARKUS_BUILDER_IMAGE="registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift"
-export QUARKUS_BUILDER_IMAGE="registry.redhat.io/openjdk/openjdk-11-rhel7:latest"
+export QUARKUS_BUILDER_IMAGE="registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift"
+#export QUARKUS_BUILDER_IMAGE="registry.redhat.io/openjdk/openjdk-11-rhel7:latest"
 #export QUARKUS_BUILDER_IMAGE="quay.io/quarkus/ubi-quarkus-native-s2i:19.3.1-java11"
+export QUARKUS_IMAGESTREAM="redhat-openjdk-18/openjdk18-openshift"
 
 export NODEJS_BUILDER_IMAGE="registry.redhat.io/rhel8/nodejs-12:latest"
+export NODEJS_IMAGESTREAM="nodejs:10"
 
 export USERNAME=cvicensa
 
