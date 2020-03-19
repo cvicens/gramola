@@ -1,6 +1,6 @@
 <mat-toolbar color="secundary">
   <mat-toolbar-row>
-    <span>Events</span>
+    <span>List of Events</span>
     <span class="example-spacer"></span>
     <button mat-icon-button color="primary">
         <mat-icon aria-hidden="false" aria-label="add icon">add</mat-icon>
@@ -12,10 +12,14 @@
     <mat-card class="card-item" *ngFor="let event of events">
       <mat-card-header>
         <mat-card-title>{{event.name}}</mat-card-title>
-        <mat-card-subtitle>{{event.artist}} @ {{event.location}}</mat-card-subtitle>
+        <mat-card-subtitle>{{event.artist}}</mat-card-subtitle>
+        <mat-card-subtitle>{{event.date}} - {{event.location}}</mat-card-subtitle>
+        <mat-card-subtitle>{{event.country}}/{{event.city}}</mat-card-subtitle>
       </mat-card-header>
-      <mat-card-content>
-        
-      </mat-card-content>
+      
+      <mat-card-actions>
+        <button mat-button>LIKE</button>
+        <button mat-button>SHARE</button>
+      </mat-card-actions>
     </mat-card>
 </mat-grid-list>
