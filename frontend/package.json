@@ -2,7 +2,7 @@
   "name": "frontend",
   "version": "0.0.0",
   "scripts": {
-    "ng": "ng",
+    "ng": "npx ng",
     "client": "npx ng serve --proxy-config server.conf.js",
     "server": "npx nodemon server.js",
     "dev": "npx concurrently --kill-others \"npm run client\" \"npm run server\"",

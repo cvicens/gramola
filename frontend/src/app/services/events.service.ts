@@ -55,8 +55,27 @@ export class EventsService extends GenericService {
           this.openSnackBar(`Retrieved #${events.length} events`);
         },
         error => {
-          this.openSnackBar('Error while moving to retrieveing events');
-          console.error('Error while moving to retrieveing events', JSON.stringify(error));
+          this.openSnackBar('Error while retrieveing events');
+          console.error('Error while retrieveing events', JSON.stringify(error));
+        }
+      );
+    } else {
+      this.openSnackBar('Events Service not ready, try again please');
+      console.error('EventsService not ready!');
+    }
+  }
+
+  createEvent(event :Event) {
+    if (this.baseUrl != null) {
+      this.http.post<any>(this.baseUrl + '/api/events', event)
+      .subscribe(
+        (payload: any) => {
+          this.openSnackBar("Event sent to the server correctly");
+          console.log(`createEvent resolved to this: ${payload}`);
+        },
+        error => {
+          this.openSnackBar('Error while creating an event');
+          console.error('Error while creating an event', JSON.stringify(error));
         }
       );
     } else {

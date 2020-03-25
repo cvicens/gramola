@@ -10,8 +10,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 // tslint:disable-next-line:max-line-length
 import { MatButtonModule, MatToolbarModule, MatCheckboxModule, MatListModule, MatIconModule, MatFormFieldModule, MatInputModule, MatExpansionModule, MatCardModule, MatGridListModule, MatSnackBarModule } from '@angular/material';
 
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatStepperModule } from '@angular/material/stepper';
+import { MatDialogModule } from '@angular/material/dialog';
+
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
 
 import { Routes, RouterModule } from '@angular/router';
 
@@ -22,6 +25,7 @@ import { EventsService } from './services/events.service';
 // Components
 import { ListEventsComponent } from './components/list-events/list-events.component';
 import { HttpClientModule } from '@angular/common/http';
+import { AddEventComponent } from './components/add-event/add-event.component';
 
 
 const appRoutes: Routes = [
@@ -33,14 +37,18 @@ const appRoutes: Routes = [
 @NgModule({
   declarations: [
     AppComponent,
-    ListEventsComponent
+    ListEventsComponent,
+    AddEventComponent
   ],
+  entryComponents: [AddEventComponent, ListEventsComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     // tslint:disable-next-line:max-line-length
-    MatButtonModule, MatToolbarModule, MatCheckboxModule, MatListModule, MatIconModule, MatStepperModule, MatFormFieldModule, MatInputModule, MatExpansionModule, MatCardModule, MatGridListModule, MatSnackBarModule,
+    MatButtonModule, MatToolbarModule, MatCheckboxModule, MatListModule, MatIconModule, MatFormFieldModule, MatInputModule, MatExpansionModule, MatCardModule, MatGridListModule, MatSnackBarModule,
+    MatStepperModule,
+    MatDialogModule,
     FormsModule, ReactiveFormsModule,
     HttpClientModule,
     RouterModule.forRoot(

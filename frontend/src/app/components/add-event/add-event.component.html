@@ -1,0 +1,112 @@
+<!--<h1 mat-dialog-title>Hi {{data.name}}</h1>
+<div mat-dialog-content>
+  <p>What's your favorite animal?</p>
+  <mat-form-field>
+    <mat-label>Favorite Animal</mat-label>
+    <input matInput [(ngModel)]="data.animal">
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">No Thanks</button>
+  <button mat-button [mat-dialog-close]="event.animal" cdkFocusInitial>Ok</button>
+</div>-->
+
+<h2 mat-dialog-title>Create a new Event</h2>
+
+<mat-dialog-content [formGroup]="form">
+  <mat-accordion>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Event Description
+        </mat-panel-title>
+        <mat-panel-description>
+          Type in descriptive data about the event
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+
+      <mat-form-field>
+        <input matInput placeholder="Name" formControlName="name">
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput placeholder="Artist" formControlName="artist">
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput placeholder="Description" formControlName="description">
+      </mat-form-field>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Location/Venue
+        </mat-panel-title>
+        <mat-panel-description>
+          Input location data
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+
+      <mat-form-field>
+        <input matInput placeholder="Location" formControlName="location">
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput placeholder="Address" formControlName="address">
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput placeholder="City" formControlName="city">
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput placeholder="Province" formControlName="province">
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput placeholder="Country" formControlName="country">
+      </mat-form-field>
+
+    </mat-expansion-panel>
+
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Event Date
+        </mat-panel-title>
+        <mat-panel-description>
+          When is this Event happening?
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+
+      <mat-form-field>
+        <input matInput placeholder="Date" formControlName="date">
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput placeholder="Start Time" formControlName="startTime">
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput placeholder="End Time" formControlName="endTime">
+      </mat-form-field>
+    </mat-expansion-panel>
+  </mat-accordion>
+
+  <mat-dialog-actions>
+
+    <button class="mat-raised-button" (click)="close()">
+      Close
+    </button>
+  
+    <button class="mat-raised-button mat-primary" (click)="save()">
+      Save
+    </button>
+  
+  </mat-dialog-actions>
+  <span class="example-spacer"></span>
+  <span class="example-spacer"></span>
+  <span class="example-spacer"></span>
+</mat-dialog-content>
+

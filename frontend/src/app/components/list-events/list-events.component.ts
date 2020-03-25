@@ -1,9 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { Event } from 'src/app/model/event.model';
+
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+
+import { Event, IEvent } from 'src/app/model/event.model';
 import { EventsService } from 'src/app/services/events.service';
 import { HttpRuntimeException } from 'src/app/model/http-error.model';
-
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import { AddEventComponent } from 'src/app/components/add-event/add-event.component';
 
 @Component({
   selector: 'app-list-events',
@@ -22,7 +26,11 @@ export class ListEventsComponent implements OnInit {
 
   events: Event[];
 
-  constructor(private eventsService: EventsService, private formBuilder: FormBuilder) {
+  // Event to be created
+  eventToBeCreated: IEvent;
+
+  // Consutructor
+  constructor(private eventsService: EventsService, private formBuilder: FormBuilder, private dialog: MatDialog) {
     this.eventsService.events.subscribe(payload => {
       this.loading = false;
       this.refreshStopTime = Date.now();
@@ -57,5 +65,46 @@ export class ListEventsComponent implements OnInit {
     this.loading = true;
     this.refreshStartTime = Date.now();
     this.eventsService.getEvents();
+  }
+
+  openDialog(): void {
+    this.eventToBeCreated = new Event();
+    const dialogRef = this.dialog.open(AddEventComponent, {
+      //width:  '900px',
+      //height: '900px',
+      maxHeight: '800px',
+      data: this.eventToBeCreated
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      this.eventToBeCreated = result;
+      
+      if (this.validateEvent(result)) {
+        console.log(`Result valid`);
+        this.eventsService.createEvent(result);
+        this.eventsService.getEvents();
+      } else {
+        console.log(`Result invalid`);
+      }
+    });
+  }
+
+  validateEvent(event :Event): boolean {
+    if (event) {
+      if (typeof event.name != 'undefined' && event.name &&
+          typeof event.artist != 'undefined' && event.artist &&
+          typeof event.description != 'undefined' && event.description &&
+          typeof event.location != 'undefined' && event.location &&
+          typeof event.address != 'undefined' && event.address &&
+          typeof event.city != 'undefined' && event.city &&
+          typeof event.province != 'undefined' && event.province &&
+          typeof event.date != 'undefined' && event.date &&
+          typeof event.startTime != 'undefined' && event.startTime &&
+          typeof event.endTime != 'undefined' && event.endTime) {
+        return true;
+     }
+    } 
+
+    return false;
   }
 }
