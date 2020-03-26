@@ -82,7 +82,6 @@ export class ListEventsComponent implements OnInit {
       if (this.validateEvent(result)) {
         console.log(`Result valid`);
         this.eventsService.createEvent(result);
-        this.eventsService.getEvents();
       } else {
         console.log(`Result invalid`);
       }

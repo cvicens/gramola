@@ -72,6 +72,7 @@ export class EventsService extends GenericService {
         (payload: any) => {
           this.openSnackBar("Event sent to the server correctly");
           console.log(`createEvent resolved to this: ${payload}`);
+          this.getEvents();
         },
         error => {
           this.openSnackBar('Error while creating an event');
