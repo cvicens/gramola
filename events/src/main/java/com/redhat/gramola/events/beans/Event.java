@@ -16,6 +16,10 @@ public class Event extends PanacheEntity {
     public String province;
     public String country;
     public String date;
+    @Column(name="start_date")
+    public String startDate;
+    @Column(name="end_date")
+    public String endDate;
     @Column(name="start_time")
     public String startTime;
     @Column(name="end_time")
