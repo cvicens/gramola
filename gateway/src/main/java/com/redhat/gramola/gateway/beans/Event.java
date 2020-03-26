@@ -20,7 +20,8 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
     "city",
     "province",
     "country",
-    "date",
+    "startDate",
+    "endDate",
     "startTime",
     "endTime",
     "location",
@@ -72,8 +73,10 @@ public class Event {
      */
     @JsonProperty("country")
     private String country;
-    @JsonProperty("date")
-    private String date;
+    @JsonProperty("startDate")
+    private String startDate;
+    @JsonProperty("endDate")
+    private String endDate;
     /**
      * 
      * (Required)
@@ -217,14 +220,24 @@ public class Event {
         this.country = country;
     }
 
-    @JsonProperty("date")
-    public String getDate() {
-        return date;
+    @JsonProperty("startDate")
+    public String getStartDate() {
+        return startDate;
     }
 
-    @JsonProperty("date")
-    public void setDate(String date) {
-        this.date = date;
+    @JsonProperty("startDate")
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
+    }
+
+    @JsonProperty("endDate")
+    public String getEndDate() {
+        return endDate;
+    }
+
+    @JsonProperty("endDate")
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
     }
 
     /**

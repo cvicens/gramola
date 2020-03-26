@@ -84,7 +84,8 @@ export class ListEventsComponent implements OnInit {
           typeof event.address != 'undefined' && event.address &&
           typeof event.city != 'undefined' && event.city &&
           typeof event.province != 'undefined' && event.province &&
-          typeof event.date != 'undefined' && event.date &&
+          typeof event.startDate != 'undefined' && event.startDate &&
+          typeof event.endDate != 'undefined' && event.endDate &&
           typeof event.startTime != 'undefined' && event.startTime &&
           typeof event.endTime != 'undefined' && event.endTime) {
         return true;

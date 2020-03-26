@@ -5,7 +5,8 @@ export interface IEvent {
     city: string;
     province: string;
     country: string;
-    date: string;
+    startDate: string;
+    endDate: string;
     startTime: string;
     endTime: string;
     location: string;
@@ -21,7 +22,8 @@ export class Event {
     public city: string;
     public province: string;
     public country: string;
-    public date: string;
+    public startDate: string;
+    public endDate: string;
     public startTime: string;
     public endTime: string;
     public location: string;
@@ -38,7 +40,8 @@ export class Event {
         this.city = obj && obj.city || "";
         this.province = obj && obj.province || "";
         this.country = obj && obj.country || "";
-        this.date = obj && obj.date || "";
+        this.startDate = obj && obj.startDate || "";
+        this.endDate = obj && obj.endDate || "";
         this.startTime = obj && obj.startTime || "";
         this.endTime = obj && obj.endTime || "";
         this.location = obj && obj.location || "";

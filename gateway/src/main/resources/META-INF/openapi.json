@@ -27,7 +27,8 @@
                                                 "city": "MADRID",
                                                 "province": "MADRID",
                                                 "country": "SPAIN",
-                                                "date": "2018-08-05",
+                                                "startDate": "2018-08-05",
+                                                "endDate": "2018-08-06",
                                                 "startTime": "18:00",
                                                 "endTime": "23:00",
                                                 "location": "Caja Magica",
@@ -42,7 +43,8 @@
                                                 "city": "PARIS",
                                                 "province": "PARIS",
                                                 "country": "FRANCE",
-                                                "date": "2018-09-15",
+                                                "startDate": "2018-09-15",
+                                                "endDate": "2018-09-16",
                                                 "startTime": "18:00",
                                                 "endTime": "23:00",
                                                 "location": "AccorHotels Arena",
@@ -280,7 +282,8 @@
                                                 "city": "MADRID",
                                                 "province": "MADRID",
                                                 "country": "SPAIN",
-                                                "date": "2018-08-05",
+                                                "startDate": "2018-08-05",
+                                                "endDate": "2018-08-06",
                                                 "startTime": "18:00",
                                                 "endTime": "23:00",
                                                 "location": "Caja Magica",
@@ -295,7 +298,8 @@
                                                 "city": "PARIS",
                                                 "province": "PARIS",
                                                 "country": "FRANCE",
-                                                "date": "2018-09-15",
+                                                "startDate": "2018-09-15",
+                                                "endDate": "2018-09-16",
                                                 "startTime": "18:00",
                                                 "endTime": "23:00",
                                                 "location": "AccorHotels Arena",
@@ -401,8 +405,11 @@
                     "address",
                     "city",
                     "country",
+                    "startDate",
+                    "endDate",
                     "province",
-                    "startTime"
+                    "startTime",
+                    "endTime"
                 ],
                 "type": "object",
                 "properties": {
@@ -425,7 +432,11 @@
                     "country": {
                         "type": "string"
                     },
-                    "date": {
+                    "startDate": {
+                        "format": "date",
+                        "type": "string"
+                    },
+                    "endDate": {
                         "format": "date",
                         "type": "string"
                     },
@@ -455,7 +466,8 @@
                     "city": "MADRID",
                     "province": "MADRID",
                     "country": "SPAIN",
-                    "date": "2018-08-05",
+                    "startDate": "2018-08-05",
+                    "endDate": "2018-08-06",
                     "startTime": "18:00",
                     "endTime": "23:00",
                     "location": "Caja Magica",

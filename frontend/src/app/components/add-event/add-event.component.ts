@@ -19,7 +19,8 @@ export class AddEventComponent implements OnInit {
   city: string;
   province: string;
   country: string;
-  date: string;
+  startDate: string;
+  endDate: string;
   startTime: string;
   endTime: string;
   location: string;
@@ -37,7 +38,8 @@ export class AddEventComponent implements OnInit {
         city: [event.city, Validators.required],
         province: [event.province, Validators.required],
         country: [event.country, Validators.required],
-        date: [event.date, Validators.required],
+        startDate: [event.startDate, Validators.required],
+        endDate: [event.endDate, Validators.required],
         startTime: [event.startTime, Validators.required],
         endTime: [event.endTime, Validators.required],
         location: [event.location, Validators.required],
