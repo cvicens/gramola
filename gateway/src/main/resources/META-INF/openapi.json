@@ -432,6 +432,10 @@
                     "country": {
                         "type": "string"
                     },
+                    "date": {
+                        "format": "date",
+                        "type": "string"
+                    },
                     "startDate": {
                         "format": "date",
                         "type": "string"
