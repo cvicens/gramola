@@ -70,7 +70,7 @@ export class EventsService extends GenericService {
       this.http.post<any>(this.baseUrl + '/api/events', event)
       .subscribe(
         (payload: any) => {
-          this.openSnackBar("Event sent to the server correctly");
+          this.openSnackBar("Event sent to the server correctly 🚀");
           console.log(`createEvent resolved to this: ${payload}`);
           this.getEvents();
         },

@@ -20,10 +20,7 @@ export class ListEventsComponent implements OnInit {
   refreshStopTime = -1;
   httpRuntimeException: HttpRuntimeException;
 
-  firstFormGroup: FormGroup;
-  secondFormGroup: FormGroup;
-  thirdFormGroup: FormGroup;
-
+  // List of events
   events: Event[];
 
   // Event to be created
@@ -34,7 +31,7 @@ export class ListEventsComponent implements OnInit {
     this.eventsService.events.subscribe(payload => {
       this.loading = false;
       this.refreshStopTime = Date.now();
-      console.log('payload', payload);
+      console.log('🚀 payload', payload);
       if (Array.isArray(payload)) {
         this.events = payload;
       } else {
@@ -49,16 +46,6 @@ export class ListEventsComponent implements OnInit {
 
   ngOnInit() {
     this.refresh(null);
-
-    this.firstFormGroup = this.formBuilder.group({
-      firstCtrl: ['', Validators.required]
-    });
-    this.secondFormGroup = this.formBuilder.group({
-      secondCtrl: ['', Validators.required]
-    });
-    this.thirdFormGroup = this.formBuilder.group({
-      thirdCtrl: ['', Validators.required]
-    });
   }
 
   refresh($event: any) {
