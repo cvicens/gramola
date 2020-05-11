@@ -54,6 +54,18 @@
   </dependencies>
   <build>
     <plugins>
+      <!--<plugin>
+        <groupId>io.quarkus</groupId>
+        <artifactId>quarkus-maven-plugin</artifactId>
+        <version>${quarkus.version}</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>build</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>-->
       <plugin>
         <groupId>io.quarkus</groupId>
         <artifactId>quarkus-maven-plugin</artifactId>
@@ -65,6 +77,10 @@
             </goals>
           </execution>
         </executions>
+        <configuration>
+          <uberJar>true</uberJar>
+          <ignoredEntries>META-INF/BC2048KE.SF,META-INF/BC1024KE.SF,META-INF/BC2048KE.DSA,META-INF/BC1024KE.DSA</ignoredEntries>
+        </configuration>
       </plugin>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>

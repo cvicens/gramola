@@ -31,7 +31,7 @@ export QUARKUS_BUILDER_IMAGE="registry.access.redhat.com/redhat-openjdk-18/openj
 export QUARKUS_IMAGESTREAM="redhat-openjdk-18/openjdk18-openshift"
 
 export NODEJS_BUILDER_IMAGE="registry.redhat.io/rhel8/nodejs-12:latest"
-export NODEJS_IMAGESTREAM="nodejs:10"
+export NODEJS_IMAGESTREAM="nodejs:12"
 
 export USERNAME=cvicensa
 
