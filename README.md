@@ -1,4 +1,4 @@
-# Setting environment
+# Setting up DEV environment
 
 ```sh
 export JAVA_BUILDER_IMAGE="registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift:1.5"
@@ -18,7 +18,7 @@ export DB_PASSWORD=secret
 oc new-project ${DEV_PROJECT}
 ```
 
-# Deploy PostgreSQL Database
+# Deploy PostgreSQL Database in DEV
 
 ```sh
 oc new-app postgresql-persistent \
@@ -29,8 +29,6 @@ oc new-app postgresql-persistent \
 
 oc label dc/${DB_SERVICE_NAME} app.kubernetes.io/part-of=gramola-app app.openshift.io/runtime=postgresql --overwrite -n ${DEV_PROJECT}
 ```
-
-#oc set env dc/events DB_SERVICE_NAME=${DB_SERVICE_NAME} DB_SERVICE_PORT=${DB_SERVICE_PORT} DB_NAME=${DB_NAME} DB_USERNAME=${DB_USERNAME} DB_PASSWORD=secret JAVA_OPTIONS=”-Dquarkus.profile=dev” -n ${DEV_PROJECT}
 
 # Deploy Events API
 
@@ -71,6 +69,65 @@ oc expose svc/frontend -n ${DEV_PROJECT} && \
 oc label dc/frontend app.kubernetes.io/part-of=gramola-app app.openshift.io/runtime=nodejs --overwrite -n ${DEV_PROJECT} && \
 oc annotate dc/frontend app.openshift.io/vcs-uri=https://github.com/cvicens/gramola.git --overwrite -n ${DEV_PROJECT} && \
 oc annotate dc/frontend app.openshift.io/vcs-ref=master --overwrite -n ${DEV_PROJECT}
+```
+
+# Connections in DEV
+
+```sh
+oc annotate dc/frontend app.openshift.io/connects-to=gateway --overwrite -n ${DEV_PROJECT}
+oc annotate dc/gateway app.openshift.io/connects-to=events --overwrite -n ${DEV_PROJECT}
+oc annotate dc/events app.openshift.io/connects-to='events-database,postgresql-persistent' --overwrite -n ${DEV_PROJECT}
+
+```
+
+# Deploy Jenkins
+
+```sh
+oc new-app jenkins-ephemeral -p MEMORY_LIMIT=3Gi -p JENKINS_IMAGE_STREAM_TAG=jenkins:2 -n ${DEV_PROJECT}
+oc label dc/jenkins app.openshift.io/runtime=jenkins --overwrite -n ${DEV_PROJECT}
+```
+
+# Setting up TEST environment
+
+```sh
+export TEST_PROJECT=gramola-test
+```
+
+# Create TEST project in OpenShift
+
+```sh
+oc new-project ${TEST_PROJECT}
+```
+
+# Deploy PostgreSQL Database in TEST
+
+```sh
+oc new-app postgresql-persistent \
+  -p DATABASE_SERVICE_NAME=${DB_SERVICE_NAME} \
+  -p POSTGRESQL_USER=${DB_USERNAME} -p POSTGRESQL_PASSWORD=${DB_PASSWORD} \
+  -p POSTGRESQL_DATABASE=${DB_NAME} \
+  -n ${TEST_PROJECT}
+
+oc label dc/${DB_SERVICE_NAME} app.kubernetes.io/part-of=gramola-app app.openshift.io/runtime=postgresql --overwrite -n ${TEST_PROJECT}
+```
+
+# Adjust permissions
+
+```sh
+oc policy add-role-to-user edit system:serviceaccount:${DEV_PROJECT}:jenkins -n ${TEST_PROJECT}
+oc policy add-role-to-user view system:serviceaccount:${DEV_PROJECT}:jenkins -n ${TEST_PROJECT}
+
+oc policy add-role-to-user system:image-puller system:serviceaccount:${TEST_PROJECT}:default -n ${DEV_PROJECT}
+```
+
+# Deploying pipelines
+
+```sh
+oc apply -n ${DEV_PROJECT} -f ./events/gramola-events-pipeline-complex.yaml
+oc start-build bc/gramola-events-pipeline-complex -n ${DEV_PROJECT}
+
+oc apply -n ${DEV_PROJECT} -f ./gateway/gramola-gateway-pipeline-complex.yaml
+oc start-build bc/gramola-gateway-pipeline-complex -n ${DEV_PROJECT}
 ```
 
 # Useful queries
