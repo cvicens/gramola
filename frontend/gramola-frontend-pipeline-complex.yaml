@@ -1,21 +1,16 @@
 apiVersion: build.openshift.io/v1
 kind: BuildConfig
 metadata:
-  name: gramola-gateway-pipeline-complex
+  name: gramola-frontend-pipeline-complex
 spec:
   strategy:
     jenkinsPipelineStrategy:
-      jenkinsfile: |-
-        // Don't forget to run the commands to create the dev project, and grant the needed roles to the service accounts
-                
+      jenkinsfile: |-   
         def BUILD_NAME = COMPONENT_NAME
             
-        //def mvnCmd = "mvn -s ./nexus_openshift_settings.xml"
-        def mvnCmd = "./mvnw"
-
         pipeline {
           agent {
-            label 'maven'
+            label 'nodejs'
           }
           stages {
             stage('Checkout') {
@@ -27,8 +22,7 @@ spec:
             stage('Build') {
                 steps {
                     dir("${CONTEXT_DIR}") {
-                        sh "${mvnCmd} -v"
-                        sh "${mvnCmd} clean package -DskipTests -Dquarkus.profile=test"
+                        sh "npm install"
                     }
                 }
             }
@@ -36,7 +30,7 @@ spec:
             stage('Test') {
                 steps {
                     dir("${CONTEXT_DIR}") {
-                        print "${mvnCmd} test"
+                        print "npm run test"
                     }
                 }
             }
@@ -45,18 +39,8 @@ spec:
                 steps {
                     script {
                         dir("${CONTEXT_DIR}") {
-                          print "${mvnCmd} sonar:sonar -Dsonar.host.url=${SONAR} -Dsonar.projectName=${JOB_BASE_NAME} -Dsonar.login=${SONAR_TOKEN}"
+                          print "npx sonar-scanner -Dsonar.host.url=${SONAR} -Dsonar.projectName=${JOB_BASE_NAME} -Dsonar.login=${SONAR_TOKEN}"
                         }
-                    }
-                }
-            }
-            
-            stage('Nexus') {
-                steps {
-                    script {
-                      dir("${CONTEXT_DIR}") {
-                        print "${mvnCmd} deploy -DskipTests=true -DaltDeploymentRepository=nexus::default::${NEXUS}/repository/maven-snapshots/"
-                      }
                     }
                 }
             }
@@ -72,7 +56,7 @@ spec:
               steps {
                 script {
                   openshift.withCluster() {
-                    openshift.newBuild("--name=${BUILD_NAME}", "--image-stream=${BUILD_IMAGE_STREAM}", "--binary")
+                    openshift.newBuild("--name=${BUILD_NAME}", "--image-stream=${BUILD_IMAGE_STREAM}", "--code=${GIT_URL}#${GIT_REF}", "--context-dir=${CONTEXT_DIR}")
                   }
                 }
               }
@@ -83,7 +67,7 @@ spec:
                 script {
                   dir("${CONTEXT_DIR}") {
                     openshift.withCluster() {
-                        openshift.selector("bc", "${BUILD_NAME}").startBuild("--from-file=./target/${COMPONENT_NAME}-${APP_VERSION}-runner.jar", "--wait")
+                        openshift.selector("bc", "${BUILD_NAME}").startBuild("--wait")
                     }      
                   }
                 }
@@ -109,9 +93,9 @@ spec:
                         //echo "After set probe liveness: ${liveness.out}"
                         //def readiness = openshift.raw( "set probe dc/${COMPONENT_NAME} --readiness --get-url=http://:8080/api/events --initial-delay-seconds=60" )
                         //echo "After set probe readiness: ${readiness.out}"
-                        def partOfLabel = openshift.raw( "label dc/${COMPONENT_NAME} app.kubernetes.io/part-of=${APP_NAME}-app app.kubernetes.io/part-of=gramola-app app.openshift.io/runtime=java" )
+                        def partOfLabel = openshift.raw( "label dc/${COMPONENT_NAME} app.kubernetes.io/part-of=${APP_NAME}-app app.kubernetes.io/part-of=gramola-app app.openshift.io/runtime=nodejs" )
                         echo "After label part-of partOfLabel: ${partOfLabel.out}"
-                        def annotate = openshift.raw( "annotate dc/${COMPONENT_NAME} app.openshift.io/connects-to=events --overwrite" )
+                        def annotate = openshift.raw( "annotate dc/${COMPONENT_NAME} app.openshift.io/connects-to=gateway --overwrite" )
                         echo "After annotate: ${annotate.out}"
                     }
                   }
@@ -156,9 +140,9 @@ spec:
                         //echo "After set probe liveness: ${liveness.out}"
                         //def readiness = openshift.raw( "set probe dc/${COMPONENT_NAME} --readiness --get-url=http://:8080/api/events --initial-delay-seconds=60" )
                         //echo "After set probe readiness: ${readiness.out}"
-                        def partOfLabel = openshift.raw( "label dc/${COMPONENT_NAME} app.kubernetes.io/part-of=${APP_NAME}-app app.kubernetes.io/part-of=gramola-app app.openshift.io/runtime=java" )
+                        def partOfLabel = openshift.raw( "label dc/${COMPONENT_NAME} app.kubernetes.io/part-of=${APP_NAME}-app app.kubernetes.io/part-of=gramola-app app.openshift.io/runtime=nodejs" )
                         echo "After label part-of partOfLabel: ${partOfLabel.out}"
-                        def annotate = openshift.raw( "annotate dc/${COMPONENT_NAME} app.openshift.io/connects-to=events --overwrite" )
+                        def annotate = openshift.raw( "annotate dc/${COMPONENT_NAME} app.openshift.io/connects-to=gateway --overwrite" )
                         echo "After annotate: ${annotate.out}"
                     }
                   }
@@ -179,7 +163,7 @@ spec:
         - name: APP_NAME
           value: "gramola"
         - name: COMPONENT_NAME
-          value: "gateway"
+          value: "frontend"
         - name: APP_VERSION
           value: "1.0.0"
         - name: DEV_PROJECT_NAME
@@ -193,7 +177,7 @@ spec:
         - name: CONTEXT_DIR
           value: "gateway"
         - name: BUILD_IMAGE_STREAM
-          value: "openshift/redhat-openjdk18-openshift:1.5"
+          value: "nodejs:12"
         - name: NEXUS
           value: "http://nexus-lab-infra"
         - name: NEXUS_USERNAME

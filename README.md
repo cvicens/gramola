@@ -10,6 +10,9 @@ export DB_SERVICE_PORT=5432
 export DB_NAME=events
 export DB_USERNAME=events
 export DB_PASSWORD=secret
+
+export REGISTRY_USERNAME=<QUAY_USER>
+export REGISTRY_PASSWORD=<QUAY_USER>
 ```
 
 # Create development project in OpenShift
@@ -49,11 +52,26 @@ oc annotate dc/events app.openshift.io/vcs-ref=master --overwrite -n ${DEV_PROJE
 ```
  
 # Deploy Gateway
- 
-```sh
-oc import-image gateway:0.0.2 --from=quay.io/cvicensa/gramola-gateway:0.0.2 --confirm --scheduled=true -n ${DEV_PROJECT}
 
-oc new-app gateway:0.0.2 --name gateway -n ${DEV_PROJECT} && \
+```sh
+oc create secret docker-registry quay-registry \
+  --docker-username=${REGISTRY_USERNAME} \
+  --docker-password=${REGISTRY_PASSWORD} \
+  --docker-server=quay.io -n ${DEV_PROJECT}
+
+oc secrets link builder quay-registry --for=pull -n ${DEV_PROJECT}
+
+oc new-build ${JAVA_BUILDER_IMAGE} --binary --name=gateway -l app=gramola-app \
+  --push-secret='quay-registry' \
+  --to=quay.io/cvicensa/gramola-gateway:latest --to-docker=true -n ${DEV_PROJECT}
+
+mvn clean package -Dquarkus.profile=test -DskipTests -f ./gateway
+
+oc start-build bc/gateway --from-file=./gateway/target/gateway-1.0.0-runner.jar --follow -n ${DEV_PROJECT}
+
+oc import-image gateway:latest --from=quay.io/cvicensa/gramola-gateway:latest --confirm --scheduled=true -n ${DEV_PROJECT}
+
+oc new-app gateway:latest --name gateway -n ${DEV_PROJECT} && \
 oc expose svc/gateway -n ${DEV_PROJECT} && \
 oc label dc/gateway app.kubernetes.io/part-of=gramola-app app.openshift.io/runtime=java --overwrite -n ${DEV_PROJECT} && \
 oc annotate dc/gateway app.openshift.io/vcs-uri=https://github.com/cvicens/gramola.git --overwrite -n ${DEV_PROJECT} && \
@@ -77,7 +95,6 @@ oc annotate dc/frontend app.openshift.io/vcs-ref=master --overwrite -n ${DEV_PRO
 oc annotate dc/frontend app.openshift.io/connects-to=gateway --overwrite -n ${DEV_PROJECT}
 oc annotate dc/gateway app.openshift.io/connects-to=events --overwrite -n ${DEV_PROJECT}
 oc annotate dc/events app.openshift.io/connects-to='events-database,postgresql-persistent' --overwrite -n ${DEV_PROJECT}
-
 ```
 
 # Deploy Jenkins
@@ -122,12 +139,37 @@ oc policy add-role-to-user system:image-puller system:serviceaccount:${TEST_PROJ
 
 # Deploying pipelines
 
+TODO
+```sh
+cat << EOF | oc -n ${DEV_PROJECT} apply -f -
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: jenkins-m2
+  labels:
+    app: jenkins
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: gp2
+  volumeMode: Filesystem  
+EOF
+BAD: oc set volume bc/gramola-events-pipeline-complex --add --name=m2 --type=persistentVolumeClaim \
+  --claim-name=jenkins-m2 --mount-path=/home/jenkins/.m2 --containers=jenkins -n ${DEV_PROJECT}
+```
+
 ```sh
 oc apply -n ${DEV_PROJECT} -f ./events/gramola-events-pipeline-complex.yaml
 oc start-build bc/gramola-events-pipeline-complex -n ${DEV_PROJECT}
 
 oc apply -n ${DEV_PROJECT} -f ./gateway/gramola-gateway-pipeline-complex.yaml
 oc start-build bc/gramola-gateway-pipeline-complex -n ${DEV_PROJECT}
+
+oc apply -n ${DEV_PROJECT} -f ./frontend/gramola-frontend-pipeline-complex.yaml
+oc start-build bc/gramola-frontend-pipeline-complex -n ${DEV_PROJECT}
 ```
 
 # Useful queries
